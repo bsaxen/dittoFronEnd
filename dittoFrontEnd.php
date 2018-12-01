@@ -63,22 +63,22 @@ function list_thing($thingid)
   echo "<a href=\"dittoFrontEnd.php?do=hide_thing\">Hide</a>";
   $url = "http://ditto:ditto@localhost:8080/api/1/things/$thingid";
   //echo $url;
-$inp = file_get_contents($url);
-$jsonIterator = new RecursiveIteratorIterator(new RecursiveArrayIterator(json_decode($inp, TRUE)),RecursiveIteratorIterator::SELF_FIRST);
+  $inp = file_get_contents($url);
+  $jsonIterator = new RecursiveIteratorIterator(new RecursiveArrayIterator(json_decode($inp, TRUE)),RecursiveIteratorIterator::SELF_FIRST);
 
-echo("<table border=1>");
-foreach ($jsonIterator as $key => $val) {
-    if(is_array($val)) {
+  echo("<table border=1>");
+  foreach ($jsonIterator as $key => $val) 
+  {
+    if(is_array($val)) 
+    {
         echo "<tr><td><b>$key</b></td><tr>";
-    } else {
-        //echo "     $key = $val";
-        //echo ("<font color=\"red\">");
-        if($val != -1)echo "<tr><td><font color=\"green\">$key</font></td><td>$val</td></tr> ";
-        //echo "</font>";
+    } else 
+    {
+        echo "<tr><td><font color=\"green\">$key</font></td><td>$val</td></tr> ";
     }
- }
- echo "</table>";
- echo "<font color=\"red\">Careful! </font><a href=\"dittoFrontEnd.php?do=delete_thing&thingid=$thingid\">Delete Thing</a>";
+  }
+  echo "</table>";
+  echo "<font color=\"red\">Careful! </font><a href=\"dittoFrontEnd.php?do=delete_thing&thingid=$thingid\">Delete Thing</a>";
 }
 
 //========================================================================
