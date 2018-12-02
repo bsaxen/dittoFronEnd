@@ -2,7 +2,7 @@
 //========================================================================
 // File: dittoFrontEnd.php
 // Author: Benny Saxén
-// Date: 2018-11-29
+// Date: 2018-12-02
 //========================================================================
 
 //========================================================================
@@ -57,28 +57,58 @@ foreach ($jsonIterator as $key => $val) {
  echo "</table>";
 }
 //========================================================================
+function list_thing2($thingid)
+//========================================================================
+{
+  echo "<a href=\"dittoFrontEnd.php?do=hide_thing\">Hide</a>";
+  $url = "http://ditto:ditto@localhost:8080/api/1/things/$thingid";
+  //echo $url;
+$inp = file_get_contents($url);
+print $inp;
+$fg = str_replace("{","<br>+",$inp);
+$fg = str_replace("}","<br>-;",$fg);
+print $fg;
+}
+//========================================================================
 function list_thing($thingid)
 //========================================================================
 {
   echo "<a href=\"dittoFrontEnd.php?do=hide_thing\">Hide</a>";
   $url = "http://ditto:ditto@localhost:8080/api/1/things/$thingid";
   //echo $url;
-  $inp = file_get_contents($url);
-  $jsonIterator = new RecursiveIteratorIterator(new RecursiveArrayIterator(json_decode($inp, TRUE)),RecursiveIteratorIterator::SELF_FIRST);
+$inp = file_get_contents($url);
+//print $inp;
+//echo "<br>";
+//var_dump(json_decode($inp,true));
 
-  echo("<table border=1>");
-  foreach ($jsonIterator as $key => $val) 
-  {
-    if(is_array($val)) 
+$jsonIterator = new RecursiveIteratorIterator(new RecursiveArrayIterator(json_decode($inp,true)),RecursiveIteratorIterator::SELF_FIRST);
+
+echo("<table border=1>");
+foreach ($jsonIterator as $key => $val) {
+    if(is_array($val))
     {
-        echo "<tr><td><b>$key</b></td><tr>";
-    } else 
-    {
-        echo "<tr><td><font color=\"green\">$key</font></td><td>$val</td></tr> ";
+        if ($key == 'acl' || $key == 'attributes' || $key == 'features' )
+        {
+          echo "<tr><td><b>$key</b></td><tr>";
+        }
+        else
+        {
+          $pos = 1;
+          echo "<tr>";
+          for ($ii = 1; $ii < $pos; $ii++) echo "<td></td>";
+          echo "<td><b>$key</b></td></tr>";
+          $pos = 2;
+        }
     }
-  }
-  echo "</table>";
-  echo "<font color=\"red\">Careful! </font><a href=\"dittoFrontEnd.php?do=delete_thing&thingid=$thingid\">Delete Thing</a>";
+    else
+    {
+          echo "<tr>";
+          for ($ii = 1; $ii < $pos; $ii++) echo "<td></td>";
+          echo "<td><font color=\"green\">$key</font></td><td>$val</td></tr> ";
+    }
+ }
+ echo "</table>";
+ echo "<font color=\"red\">Careful! </font><a href=\"dittoFrontEnd.php?do=delete_thing&thingid=$thingid\">Delete Thing</a>";
 }
 
 //========================================================================
@@ -134,7 +164,7 @@ if (isset($_POST['do']))
 echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><head>";
 echo "</head>";
 echo "<body>";
-
+echo "<h1>Scania Digital Twin Manager</h1>";
 echo "<a href=dittoFrontEnd.php?do=list_all_things>list all things</a><br>";
 echo "
  <table border=1>
